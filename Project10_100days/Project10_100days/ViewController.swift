@@ -111,7 +111,6 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
             self?.deletePersonTapped(at: indexPath)
         }))
         ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        // provide the source for ipad compatibility
         if let popoverController = ac.popoverPresentationController {
             if let cellView = collectionView.cellForItem(at: indexPath) {
                 popoverController.sourceView = cellView
@@ -138,7 +137,7 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
     }
 
     func deletePersonTapped(at indexPath: IndexPath) {
-        let ac = UIAlertController(title: "Confirmation", message: "Delete person \"\(people[indexPath.item].name)\"?", preferredStyle: .alert)
+        let ac = UIAlertController(title: "Deletion", message: "Delete person \"\(people[indexPath.item].name)\"?", preferredStyle: .alert)
         ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         ac.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak self] _ in
             self?.deletePerson(at: indexPath)
@@ -150,12 +149,12 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
     func deletePerson(at indexPath: IndexPath) {
         DispatchQueue.global().async { [weak self] in
             guard let image = self?.people[indexPath.item].image else {
-                self?.showDeleteError()
+                self?.showDelError()
                 return
             }
             
             guard let imagePath = self?.getDocumentsDirectory().appendingPathComponent(image) else {
-                self?.showDeleteError()
+                self?.showDelError()
                 return
             }
             
@@ -163,7 +162,7 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
                 try FileManager.default.removeItem(at: imagePath)
             }
             catch {
-                self?.showDeleteError()
+                self?.showDelError()
                 return
             }
 
@@ -175,12 +174,11 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
         }
     }
     
-    func showDeleteError() {
-        DispatchQueue.main.async { [weak self] in
-            let ac = UIAlertController(title: "Error", message: "Person could not be deleted", preferredStyle: .alert)
-            ac.addAction(UIAlertAction(title: "OK", style: .default))
+    func showDelError() {
+        let ac = UIAlertController(title: "Error", message: "Person could not be deleted", preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "OK", style: .default))
             
-            self?.present(ac, animated: true)
-        }
+        self.present(ac, animated: true)
+        
     }
 }
